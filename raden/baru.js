@@ -1,23 +1,41 @@
-const display = document.querySelector(".display");
-const buttons = document.querySelectorAll("button");
-const specialChars = ["%", "*", "/", "-", "+", "="];
-let output = "";
+// Ambil elemen-elemen penting
+const display = document.querySelector('.display'); // Layar kalkulator
+const buttons = document.querySelectorAll('button'); // Semua tombol pada kalkulator
 
-const calculate = (btnValue) => {
-    display.focus();
-    if (btnValue === "=" && output !== "") {
-        output = eval(output.replace("%", "/100"));
-    } else if (btnValue === "AC") {
-        output = "";
-    } else if (btnValue === "DEL") {
-        output = output.toString().slice(0, -1);
+// Variabel untuk menyimpan ekspresi kalkulator
+let currentExpression = "";
+
+// Fungsi untuk memproses input tombol
+function processInput(value) {
+    if (value === "AC") {
+        // Bersihkan ekspresi
+        currentExpression = "";
+    } else if (value === "DEL") {
+        // Hapus karakter terakhir
+        currentExpression = currentExpression.slice(0, -1);
+    } else if (value === "=") {
+        // Evaluasi ekspresi
+        try {
+            currentExpression = eval(currentExpression.replace("%", "/100")) || ""; // Evaluasi dengan penggantian persen
+        } catch (error) {
+            currentExpression = "Error"; // Tampilkan 'Error' jika ekspresi tidak valid
+        }
     } else {
-        if (output === "" && specialChars.includes(btnValue)) return;
-        output += btnValue;
+        // Tambahkan nilai tombol ke ekspresi
+        if (currentExpression === "Error") {
+            currentExpression = ""; // Reset jika sebelumnya error
+        }
+        currentExpression += value;
     }
-    display.value = output;
-};
 
+    // Tampilkan ekspresi atau hasil di layar
+    display.value = currentExpression;
+}
+
+// Pasang event listener untuk setiap tombol
 buttons.forEach((button) => {
-    button.addEventListener("click", (e) => calculate(e.target.dataset.value));
+    button.addEventListener('click', (e) => {
+        const value = e.target.dataset.value; // Ambil nilai dari atribut data-value
+        processInput(value);
+    });
 });
