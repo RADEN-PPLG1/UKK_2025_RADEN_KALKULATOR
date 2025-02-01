@@ -1,9 +1,15 @@
 // Ambil elemen-elemen penting
+// Ambil elemen-elemen penting
 const display = document.querySelector('.display'); // Layar kalkulator
 const buttons = document.querySelectorAll('button'); // Semua tombol pada kalkulator
 
 // Variabel untuk menyimpan ekspresi kalkulator
 let currentExpression = "";
+
+// Fungsi untuk memformat angka dengan titik sebagai pemisah ribuan
+function formatNumber(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 
 // Fungsi untuk memproses input tombol
 function processInput(value) {
@@ -16,7 +22,8 @@ function processInput(value) {
     } else if (value === "=") {
         // Evaluasi ekspresi
         try {
-            currentExpression = eval(currentExpression.replace("%", "/100")) || ""; // Evaluasi dengan penggantian persen
+            let result = eval(currentExpression); // Evaluasi ekspresi
+            currentExpression = formatNumber(result); // Format hasil
         } catch (error) {
             currentExpression = "Error"; // Tampilkan 'Error' jika ekspresi tidak valid
         }
@@ -39,3 +46,4 @@ buttons.forEach((button) => {
         processInput(value);
     });
 });
+
